@@ -46,13 +46,10 @@ function projectdemo3()
         disp('No packets to simulate');
         return;
     end
-    
-    % Collect the statistics in this array.
     SIMRESULT = [];
         
-    while(1)
-        
-        % Update the clock.
+    while(1)  
+        % Update clock.
         updateclock(); 
         
         % lấy node nguồn 1 cách ngẫu nhiên từ hàng 1 của elist1 và elist2
@@ -133,27 +130,26 @@ function projectdemo3()
         figure(2);
         plotcount = 0;
         f = [];
-        for i = 1:4		% source
+        for i = 1:4		% nguồn
 			source = nodes(i);
             var3 = 0;
             queuedelay = 0;
             accessdelay = 0;
-			for j = 1:4		% destination
+			for j = 1:4		% đích
 				if j ~= i
                     plotcount = plotcount + 1;
-                    % calculating packet statistics
 					destination = nodes(j);                    
 					var1 = SIMRESULT(SIMRESULT(:,SRC) == source,:);
                     var1 = var1(var1(:,DEST) == destination,:);
                     
-                    % number of packets sent from node i to node j
+                    % số gói tin gửi từ node i đến node j
                     var2 = length(var1);
                     
-                    % queuing delay from node i to node j
+                    % queuing delay từ node i đến node j
                     var3 = var1(:, RXTIME) - var1(:, GENTIME);
                     figure(1);
                     plottitle = strcat('Queue delay from node ', num2str(i), ' to ', num2str(j));
-                    queuedelay = sum(var3);     % Sum of queuing delays at every node
+                    queuedelay = sum(var3);     
                     subplot(4,3, plotcount);
                     plot(1:length(var3),var3);
                     xlabel('Packet sequence #');
@@ -173,16 +169,13 @@ function projectdemo3()
                     
                     var5 = var1(:, COLLISIONS);
                     noofcollisions = sum(var5);
-                    % end to end throughput for all pair of nodes
-                    meanendtoend = mean(var3);
-                    
-                    % Average end to end throughput
+                    meanendtoend = mean(var3);                    
                     % Avgtha=((1000*8)/meanendtoenda)*10^6;  % bits/sec
                     avgthroughput = ((1000*8)/meanendtoend)*10^6;  % bits/sec
                     f = [f; i j avgthroughput var2 noofcollisions];
                end
             end
-            % total queuing delay at node A, B, C and D
+            % tổng queuing delay tại node A, B, C và D
             queuedelay = queuedelay - 3*tdelay;
         end
         disp(array2table(f, 'VariableNames',{'Source','Destination','Throughput', 'NoOfPacketsSent', 'NoOfCollisions'}));
@@ -215,10 +208,10 @@ function projectdemo3()
     end
    % hàm khởi tạo createpacket
      function pkt = createpacket(nodeid)
-        % Find the inter-arrival time.
+        %  inter-arrival time.
         interarvtime = round(frameslot*exprnd(1/lambda,1,1));
         
-        % Find the birth time.
+        %  the birth time.
         GENTIMECURSOR(nodeid) = GENTIMECURSOR(nodeid) + interarvtime;
         
         % tạo gói.  Unknown fields are set to 0.
@@ -234,8 +227,7 @@ function projectdemo3()
         end
     end
 
-	
-	% Return the CURTIME of node
+
 	function t = getcurtime(node, elist)
 		idx = find(elist(:,SRC) == node, 1, 'first');
         t = elist(idx, CURTIME);
@@ -245,12 +237,10 @@ function projectdemo3()
         if bus1
             DELAYTIME = getcurtime(node, elist1) + delay;
             list = find(elist1(:,CURTIME)-DELAYTIME < 0 & elist1(:,SRC)==node); 
-            % Set the CURTIME field of all the rows in list to DELAYTIME.
             elist1(list,CURTIME) = DELAYTIME;
         else
             DELAYTIME = getcurtime(node, elist2) + delay;
             list = find(elist2(:,CURTIME)-DELAYTIME < 0 & elist2(:,SRC)==node); 
-            % Set the CURTIME field of all the rows in list to DELAYTIME.
             elist2(list,CURTIME) = DELAYTIME;
         end
             

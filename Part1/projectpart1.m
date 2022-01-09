@@ -260,10 +260,7 @@ while(1)
         elist(list,CURTIME) = DELAYTIME;
     end
    function updatesimlist()
-        % Enqueue to the the first row of event list to SIMRESULT. 
         SIMRESULT=[SIMRESULT; elist(1,1:end)];
-        
-        % Delete the first row of elist.
         elist(1,:)=[];
    end
 disp(toc);
